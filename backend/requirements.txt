@@ -1,0 +1,39 @@
+# === Web Framework ===
+fastapi
+uvicorn[standard]
+python-multipart
+
+# === Data Validation ===
+pydantic
+pydantic-settings
+
+# === LLM & AI ===
+langchain
+langchain-groq
+langchain-huggingface
+langchain-chroma
+langchain-community
+
+# === Vector Database ===
+chromadb
+
+# === Embeddings ===
+sentence-transformers
+
+# === Data Processing ===
+pandas
+numpy
+
+# === Document Parsing ===
+pypdf
+pdfplumber
+
+# === Environment ===
+python-dotenv
+
+# === HTTP ===
+httpx
+
+# === Testing ===
+pytest
+pytest-asyncio

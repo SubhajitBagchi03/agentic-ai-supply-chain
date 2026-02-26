@@ -1,0 +1,9 @@
+supplier_id,name,cost_index,lead_time,on_time_rate,quality_score,risk_score
+SUP001,Acme Materials,45,7,0.92,0.88,0.15
+SUP002,Global Parts Inc,62,12,0.78,0.82,0.35
+SUP003,Swift Components,38,3,0.95,0.91,0.10
+SUP004,Eastern Supply Co,55,9,0.85,0.79,0.25
+SUP005,Budget Wholesale,25,15,0.65,0.70,0.55
+SUP006,Premium Logistics,72,5,0.98,0.96,0.08
+SUP007,Regional Traders,40,8,0.88,0.84,0.20
+SUP008,Offshore Mfg Ltd,20,30,0.60,0.65,0.60

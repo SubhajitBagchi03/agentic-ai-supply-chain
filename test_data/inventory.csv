@@ -1,0 +1,9 @@
+sku,name,warehouse,on_hand,safety_stock,lead_time_days,avg_daily_demand,supplier_id
+SKU001,Widget Alpha,WH-EAST,150,50,7,20,SUP001
+SKU002,Widget Beta,WH-WEST,10,30,5,15,SUP002
+SKU003,Gadget Prime,WH-EAST,200,40,3,10,SUP001
+SKU004,Component Zeta,WH-NORTH,5,25,10,12,SUP003
+SKU005,Part Omega,WH-WEST,80,20,4,8,SUP002
+SKU006,Assembly Kit,WH-EAST,3,15,6,7,SUP004
+SKU007,Sensor Unit,WH-NORTH,45,30,8,5,SUP001
+SKU008,Motor Drive,WH-WEST,0,20,12,10,SUP003

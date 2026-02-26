@@ -1,0 +1,28 @@
+Subject: Update on Delivery Schedule and Capacity Constraints
+
+From: operations@acmematerials.com
+To: procurement@yourcompany.com
+Date: 12 Feb 2026
+
+Dear Team,
+
+We would like to inform you of temporary capacity constraints at our primary manufacturing facility due to maintenance activities scheduled between February 15 and February 25.
+
+During this period:
+
+- Lead times for Product SKU-101 and SKU-205 may increase by 3–5 days.
+- Shipment volumes may be limited to 80% of usual capacity.
+- Expedited shipping is available upon request but will incur additional charges.
+
+We are working to minimize disruptions and expect normal operations to resume by March 1.
+
+Please also note that any urgent orders should be communicated at least 48 hours in advance so we can prioritize production.
+
+If delays exceed 5 days, penalty clauses outlined in our supply agreement may apply.
+
+For any questions or urgent requests, please contact our logistics coordinator.
+
+Best regards,
+Michael Chen
+Supply Operations Manager
+Acme Materials

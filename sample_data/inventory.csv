@@ -1,0 +1,11 @@
+sku,name,warehouse,on_hand,safety_stock,lead_time_days,avg_daily_demand,supplier_id,last_updated
+SKU001,Widget A,Warehouse-East,500,100,7,30,SUP001,2026-02-20
+SKU002,Widget B,Warehouse-West,80,50,5,25,SUP002,2026-02-20
+SKU003,Gadget X,Warehouse-East,20,30,10,15,SUP001,2026-02-18
+SKU004,Component Y,Warehouse-Central,1000,200,3,50,SUP003,2026-02-22
+SKU005,Part Z,Warehouse-East,0,75,14,20,SUP002,2026-02-15
+SKU006,Assembly Kit,Warehouse-West,150,60,7,18,SUP004,2026-02-21
+SKU007,Raw Material R,Warehouse-Central,5000,500,21,100,SUP001,2026-02-22
+SKU008,Finished Good F,Warehouse-East,45,40,4,22,SUP003,2026-02-19
+SKU009,Spare Part S,Warehouse-West,300,80,6,10,SUP004,2026-02-20
+SKU010,Premium Unit P,Warehouse-Central,-5,50,8,12,SUP002,2026-02-22
