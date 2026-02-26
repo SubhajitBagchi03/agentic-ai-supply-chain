@@ -1,5 +1,0 @@
-supplier_id,name,cost_index,lead_time,on_time_rate,quality_score,risk_score
-SUP001,Acme Materials,0.85,7,0.92,0.88,0.15
-SUP002,Global Parts Inc,0.72,5,0.78,0.65,0.45
-SUP003,PrecisionTech,0.95,12,0.60,0.90,0.70
-SUP004,QuickSupply Co,0.60,3,0.95,0.70,0.20
