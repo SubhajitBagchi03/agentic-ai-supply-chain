@@ -12,16 +12,19 @@ from utils.logger import api_logger
 
 router = APIRouter(tags=["Health"])
 
-# Cache groq status so we don't call it on every health check
-_groq_status_cache = {"ok": None, "checked": False}
+import time
 
+# Cache groq status so we don't call it on every health check
+_groq_status_cache = {"ok": None, "checked": False, "last_check": 0}
 
 def _check_groq_fast() -> bool:
     """Fast Groq check — validates key format and does a quick ping (cached)."""
     global _groq_status_cache
+    
+    current_time = time.time()
 
-    # If already checked and succeeded, return cached result
-    if _groq_status_cache["checked"] and _groq_status_cache["ok"]:
+    # If already checked, succeeded, and less than 5 mins old, return cached result
+    if _groq_status_cache["checked"] and _groq_status_cache["ok"] and (current_time - _groq_status_cache["last_check"] < 300):
         return True
 
     try:
@@ -32,7 +35,7 @@ def _check_groq_fast() -> bool:
         # Fast key format validation — Groq keys start with gsk_
         if not key or not key.startswith("gsk_") or len(key) < 20:
             api_logger.warning("Groq API key missing or invalid format")
-            _groq_status_cache = {"ok": False, "checked": True}
+            _groq_status_cache = {"ok": False, "checked": True, "last_check": current_time}
             return False
 
         # Try a real but lightweight API call
@@ -44,13 +47,13 @@ def _check_groq_fast() -> bool:
             timeout=8,
         )
         llm.invoke("hi")
-        _groq_status_cache = {"ok": True, "checked": True}
+        _groq_status_cache = {"ok": True, "checked": True, "last_check": current_time}
         api_logger.info("Groq API health check: connected")
         return True
 
     except Exception as e:
         api_logger.warning(f"Groq health check failed: {e}")
-        _groq_status_cache = {"ok": False, "checked": True}
+        _groq_status_cache = {"ok": False, "checked": True, "last_check": current_time}
         return False
 
 
