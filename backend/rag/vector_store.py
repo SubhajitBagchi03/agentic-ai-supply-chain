@@ -44,7 +44,7 @@ def get_vector_store():
 
 def add_documents(chunks: List[dict]) -> int:
     """
-    Add document chunks to the vector store.
+    Add document chunks to the vector store in small batches to preserve memory.
     
     Args:
         chunks: List of dicts with 'text' and 'metadata'
@@ -63,9 +63,16 @@ def add_documents(chunks: List[dict]) -> int:
     # Use chunk_id as the document ID for deduplication
     ids = [c["metadata"].get("chunk_id", f"chunk_{i}") for i, c in enumerate(chunks)]
 
-    store.add_texts(texts=texts, metadatas=metadatas, ids=ids)
+    # --- BATCH PROCESSING (Memory Optimization for Render) ---
+    batch_size = 16 
+    for i in range(0, len(texts), batch_size):
+        batch_texts = texts[i : i + batch_size]
+        batch_metadatas = metadatas[i : i + batch_size]
+        batch_ids = ids[i : i + batch_size]
+        
+        store.add_texts(texts=batch_texts, metadatas=batch_metadatas, ids=batch_ids)
 
-    rag_logger.info(f"Added {len(chunks)} chunks to vector store")
+    rag_logger.info(f"Added {len(chunks)} chunks to vector store (in batches of {batch_size})")
     return len(chunks)
 
 

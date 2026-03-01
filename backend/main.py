@@ -2,6 +2,16 @@
 FastAPI application entry point for the Supply Chain Control Tower.
 """
 
+import os
+# --- MEMORY OPTIMIZATION FOR RENDER FREE TIER ---
+# Must be set before importing pandas, torch, or sentence_transformers
+os.environ["OMP_NUM_THREADS"] = "1"
+os.environ["OPENBLAS_NUM_THREADS"] = "1"
+os.environ["MKL_NUM_THREADS"] = "1"
+os.environ["VECLIB_MAXIMUM_THREADS"] = "1"
+os.environ["NUMEXPR_NUM_THREADS"] = "1"
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
+
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
