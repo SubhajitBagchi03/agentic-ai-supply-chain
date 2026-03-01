@@ -52,6 +52,12 @@ class Settings(BaseSettings):
         description="Logging level"
     )
 
+    # --- CORS / Deployment ---
+    frontend_url: str = Field(
+        default="http://localhost:5173",
+        description="Allowed CORS origin (e.g., Render frontend URL)"
+    )
+
     model_config = {
         "env_file": ".env",
         "env_file_encoding": "utf-8",

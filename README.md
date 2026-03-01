@@ -51,3 +51,33 @@ npm run dev
 ```
 
 The application will be available at `http://localhost:5173`.
+
+---
+
+## Deployment (Render)
+
+This monorepo is configured for easy deployment on [Render](https://render.com/).
+
+### Backend (Web Service)
+
+1. Create a new **Web Service** on Render.
+2. Connect your GitHub repository.
+3. **Root Directory:** `backend`
+4. **Environment:** `Python 3`
+5. **Build Command:** `pip install -r requirements.txt`
+6. **Start Command:** `uvicorn main:app --host 0.0.0.0 --port $PORT`
+7. **Environment Variables:**
+   - `GROQ_API_KEY`: (Your Key)
+   - `FRONTEND_URL`: (Your Render Static Site URL, e.g., `https://my-frontend.onrender.com`)
+
+_Note: On Render's free tier, storage is ephemeral. Uploaded CSVs and ChromaDB vector embeddings will reset when the server restarts._
+
+### Frontend (Static Site)
+
+1. Create a new **Static Site** on Render.
+2. Connect your GitHub repository.
+3. **Root Directory:** `frontend`
+4. **Build Command:** `npm install && npm run build`
+5. **Publish Directory:** `dist`
+6. **Environment Variables:**
+   - `VITE_API_URL`: (Your Render Web Service URL, e.g., `https://my-backend.onrender.com`)
