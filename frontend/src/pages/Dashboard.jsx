@@ -280,9 +280,10 @@ export default function Dashboard() {
                   </div>
                 ))
               ) : (
-                <p className="text-muted-foreground">
-                  {health ? 'Upload datasets to enable risk monitoring.' : 'Connect to backend to view risks.'}
-                </p>
+                <div className="flex items-center gap-2 text-emerald-600 font-medium">
+                  <Check className="w-4 h-4" />
+                  <span>No active risks detected</span>
+                </div>
               )}
               {!health && (
                 <div className="flex items-center gap-2 text-amber-600">

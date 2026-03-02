@@ -156,7 +156,7 @@ export default function Header({ title, subtitle }) {
   };
 
   return (
-    <header className="sticky top-0 z-40 py-3 px-6">
+    <header className="sticky top-0 z-40 py-3 px-6 bg-[#f8fafc]/90 backdrop-blur-md border-b border-black/5">
       <div className="flex items-center justify-between">
         <div className="min-w-0 mr-4">
           <h2 className="text-lg font-semibold text-foreground truncate">{title}</h2>

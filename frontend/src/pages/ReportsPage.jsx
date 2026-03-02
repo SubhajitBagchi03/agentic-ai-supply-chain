@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Header from '../components/layout/Header';
 import { sendQuery } from '../services/api';
 import { BarChart3, Loader2, AlertTriangle, TrendingUp, Shield, Package, Lightbulb } from 'lucide-react';
@@ -6,8 +6,21 @@ import { renderMarkdown } from '../utils/markdown';
 
 export default function ReportsPage() {
   const [loading, setLoading] = useState(false);
-  const [report, setReport] = useState(null);
+  
+  // Load initial state from sessionStorage
+  const [report, setReport] = useState(() => {
+    const saved = sessionStorage.getItem('saved_report_data');
+    return saved ? JSON.parse(saved) : null;
+  });
+  
   const [error, setError] = useState(null);
+
+  // Save to sessionStorage whenever report changes
+  useEffect(() => {
+    if (report) {
+      sessionStorage.setItem('saved_report_data', JSON.stringify(report));
+    }
+  }, [report]);
 
   const generateReport = async () => {
     setLoading(true);
