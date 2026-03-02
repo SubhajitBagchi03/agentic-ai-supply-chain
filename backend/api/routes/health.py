@@ -89,3 +89,26 @@ async def health_check():
         documents_indexed=doc_count,
         groq_connected=groq_ok,
     )
+
+
+@router.post("/health/reset")
+async def reset_system():
+    """
+    Completely wipe all datasets and documents from memory and vector store.
+    """
+    # Clear Pandas Memory
+    data_store.clear()
+    
+    # Clear Chroma Vectors
+    from rag.vector_store import clear_all_documents
+    clear_all_documents()
+
+    # Clear Google Sheets active polling
+    try:
+        from api.routes.sheets import active_connections
+        active_connections.clear()
+    except Exception:
+        pass
+
+    api_logger.info("System absolutely reset to blank slate via API call")
+    return {"status": "success", "message": "All data totally wiped."}

@@ -163,3 +163,18 @@ def delete_documents(document_id: str) -> bool:
     except Exception as e:
         rag_logger.error(f"Failed to delete document {document_id}: {str(e)}")
         return False
+
+def clear_all_documents() -> bool:
+    """Completely wipe the entire ChromaDB collection."""
+    try:
+        store = get_vector_store()
+        collection = store._collection
+        if collection and collection.count() > 0:
+            result = collection.get()
+            if result and result.get("ids"):
+                collection.delete(ids=result["ids"])
+                rag_logger.info(f"Cleared {len(result['ids'])} chunks from vector store")
+        return True
+    except Exception as e:
+        rag_logger.error(f"Failed to clear all documents: {str(e)}")
+        return False

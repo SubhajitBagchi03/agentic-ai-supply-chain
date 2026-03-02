@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import AppLayout from './components/layout/AppLayout';
 import Dashboard from './pages/Dashboard';
@@ -7,8 +8,18 @@ import ShipmentsPage from './pages/ShipmentsPage';
 import DocumentsPage from './pages/DocumentsPage';
 import QueryPage from './pages/QueryPage';
 import ReportsPage from './pages/ReportsPage';
+import { resetSystem } from './services/api';
 
 export default function App() {
+  // Because this is the root component, this useEffect runs exactly once 
+  // whenever the user first opens the app or hits Browser Refresh (F5).
+  useEffect(() => {
+    // 1. Wipe local browser memory (like saved Reports)
+    sessionStorage.clear();
+    // 2. Wipe the backend AI vectors and Pandas datasets
+    resetSystem().catch(err => console.error("System reset failed:", err));
+  }, []);
+
   return (
     <BrowserRouter>
       <AppLayout>

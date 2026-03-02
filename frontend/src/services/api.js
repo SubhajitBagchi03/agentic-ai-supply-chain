@@ -85,6 +85,10 @@ export async function getHealth() {
   return request('/health');
 }
 
+export async function resetSystem() {
+  return request('/health/reset', { method: 'POST' });
+}
+
 // === Alert APIs ===
 
 export async function getAlerts(unreadOnly = false, limit = 50) {
