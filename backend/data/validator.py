@@ -61,18 +61,37 @@ Output ONLY a valid JSON dictionary where the keys are the ACTUAL column names a
         return {}
 
 
+# Columns that should strictly remain strings and NOT be aggressively scrubbed for numbers
+STRING_COLS = {
+    "sku", "name", "warehouse", "supplier_id", "shipment_id", "origin", 
+    "destination", "status", "carrier", "date", "planned_date", "actual_date", 
+    "category", "channel", "region", "contact_email", "country"
+}
+
 def _scrub_data_types(df: pd.DataFrame) -> pd.DataFrame:
-    """Scrub messy data types (e.g., $1,500.00 -> 1500.0) across all columns."""
+    """
+    Scrub messy data types across all columns.
+    Aggressively extracts numbers (e.g., $1,500.00 -> 1500.0, 30 days -> 30)
+    unless the column is a known categorical/ID column.
+    """
     for col in df.columns:
-        # Remove entirely string contents like $ and , from what might be numbers
-        cleaned = df[col].astype(str).str.replace(r'[$,£€% ]', '', regex=True)
-        # Try to convert to numeric, coerce errors to NaN
-        temp = pd.to_numeric(cleaned, errors='coerce')
+        if col in STRING_COLS:
+            continue
+            
+        # Clean commas first so thousands aren't split
+        cleaned = df[col].astype(str).str.replace(',', '', regex=False)
         
-        # If the column was genuinely mostly numbers (like a stripped currency column)
-        # then at least 50% of the non-null rows will successfully cast to valid floats.
-        if len(cleaned) > 0 and (temp.notna().sum() / len(cleaned)) > 0.5:
+        # Strip all characters that are not digits, periods, or minus signs
+        # (e.g., "$1500.00" -> "1500.00", "30 days" -> "30", "1.5%" -> "1.5")
+        stripped = cleaned.str.replace(r'[^\d\.\-]', '', regex=True)
+        
+        # Try to convert to numeric, coerce errors to NaN
+        temp = pd.to_numeric(stripped, errors='coerce')
+        
+        # If the column was genuinely mostly numbers (at least 50% successful extraction)
+        if len(stripped) > 0 and (temp.notna().sum() / len(stripped)) > 0.5:
             df[col] = temp
+            
     return df
 
 
