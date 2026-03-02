@@ -16,25 +16,30 @@ export default function App() {
   // Because this is the root component, this useEffect runs exactly once 
   // whenever the user first opens the app or hits Browser Refresh (F5).
   useEffect(() => {
+    let isMounted = true;
+
     // 1. Wipe local browser memory (Reports from sessionStorage, Chat from localStorage)
     sessionStorage.clear();
     localStorage.clear();
 
     // 2. Wipe the backend AI vectors and Pandas datasets
-    // Wait for the backend to finish wiping BEFORE drawing the UI
-    resetSystem()
-      .then(() => setIsInitializing(false))
-      .catch(err => {
-        console.error("System reset failed:", err);
-        setIsInitializing(false);
-      });
+    // Wait for the backend for a maximum of 500ms before drawing the UI
+    const resetPromise = resetSystem().catch(err => console.error("System reset failed:", err));
+    const timeoutPromise = new Promise(resolve => setTimeout(resolve, 500));
+
+    Promise.race([resetPromise, timeoutPromise]).finally(() => {
+      if (isMounted) setIsInitializing(false);
+    });
+
+    return () => { isMounted = false; };
   }, []);
 
-  // Block rendering until the backend wipe is complete to prevent data-flashing
+  // Block rendering briefly to prevent flashing, but fallback to dashboard quickly
   if (isInitializing) {
     return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center text-sm text-muted-foreground animate-pulse">
-        Initializing clean session...
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center">
+        <div className="w-8 h-8 rounded-full border-4 border-foreground/20 border-t-foreground animate-spin mb-4" />
+        <span className="text-sm text-muted-foreground font-medium">Starting up session...</span>
       </div>
     );
   }
