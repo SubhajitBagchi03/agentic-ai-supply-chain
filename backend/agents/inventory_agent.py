@@ -77,8 +77,13 @@ class InventoryAgent(BaseAgent):
             "reorder_recommendations": [],
             "anomalies": [],
             "warnings": [],
+            "historical_conflicts": [],
             "summary": {},
         }
+
+        # Retrieve previous historical upload (if any)
+        from data.history import get_previous_upload
+        history_df = get_previous_upload("inventory")
 
         from datetime import datetime
         current_month = datetime.now().month
@@ -142,6 +147,23 @@ class InventoryAgent(BaseAgent):
                         on_hand, avg_demand, lead_time
                     ),
                 })
+                
+            # --- Conflict Detection (Historical Ledger) ---
+            if not history_df.empty and "sku" in history_df.columns:
+                prev_row = history_df[history_df["sku"] == sku]
+                if not prev_row.empty:
+                    prev_on_hand = float(prev_row.iloc[0]["on_hand"])
+                    # If stock dropped abruptly > 80% and we didn't start with 0
+                    if prev_on_hand > 5 and (prev_on_hand - on_hand) / prev_on_hand > 0.8:
+                        results["historical_conflicts"].append({
+                            "sku": sku,
+                            "previous_on_hand": prev_on_hand,
+                            "current_on_hand": on_hand,
+                            "drop_percentage": round(((prev_on_hand - on_hand) / prev_on_hand) * 100, 1)
+                        })
+                        results["warnings"].append(
+                            f"HISTORICAL CONFLICT: {sku} stock plummeted from {prev_on_hand} to {on_hand} since last upload."
+                        )
 
             # --- Demand anomaly detection (if demand data available) ---
             if demand_df is not None and not demand_df.empty:
@@ -205,6 +227,7 @@ Low stock: {analysis['low_stock_items'][:5]}
 Reorder needs: {analysis['reorder_recommendations'][:5]}
 Critical: {analysis['critical_items'][:5]}
 Anomalies: {analysis['anomalies'][:3]}
+Historical Conflicts: {analysis['historical_conflicts'][:5]}
 {context_text}
 
 Be specific — cite SKU IDs, quantities, and supplier IDs. Keep it concise."""

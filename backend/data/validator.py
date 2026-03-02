@@ -262,4 +262,8 @@ async def validate_dataset(df: pd.DataFrame, dataset_type: str) -> Tuple[pd.Data
         quality_warnings = validator(df)
         warnings.extend(quality_warnings)
 
+    import asyncio
+    from data.history import save_to_history_background
+    asyncio.create_task(save_to_history_background(df, dataset_type))
+
     return df, warnings
