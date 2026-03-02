@@ -110,5 +110,9 @@ async def reset_system():
     except Exception:
         pass
 
+    # Clear Live Alerts
+    from monitoring.alert_store import alert_store
+    alert_store.clear()
+
     api_logger.info("System absolutely reset to blank slate via API call")
     return {"status": "success", "message": "All data totally wiped."}
