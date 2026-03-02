@@ -80,12 +80,24 @@ class InventoryAgent(BaseAgent):
             "summary": {},
         }
 
+        from datetime import datetime
+        current_month = datetime.now().month
+        if current_month in [10, 11, 12]:
+            seasonal_multiplier = 1.4
+        elif current_month in [1, 2, 3]:
+            seasonal_multiplier = 0.9
+        else:
+            seasonal_multiplier = 1.1
+
         for _, row in inventory_df.iterrows():
             sku = row["sku"]
             on_hand = float(row["on_hand"])
             safety_stock = float(row["safety_stock"])
             lead_time = float(row["lead_time_days"])
-            avg_demand = float(row["avg_daily_demand"])
+            base_demand = float(row["avg_daily_demand"])
+            
+            # Apply Seasonal Multiplier to true Demand
+            avg_demand = base_demand * seasonal_multiplier
 
             # --- Low stock detection ---
             if on_hand < safety_stock:
@@ -186,6 +198,8 @@ DATA SUMMARY:
 - {analysis['summary']['low_stock_count']} items below safety stock
 - {analysis['summary']['critical_count']} critical (zero/negative stock)
 - {analysis['summary']['items_needing_reorder']} items needing reorder
+
+*Note: Calculations include a dynamic Seasonal Multiplier of {seasonal_multiplier}x applied to base demand based on the current calendar month.*
 
 Low stock: {analysis['low_stock_items'][:5]}
 Reorder needs: {analysis['reorder_recommendations'][:5]}

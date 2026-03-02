@@ -32,7 +32,8 @@ class SupplierAgent(BaseAgent):
             return self.log_no_data("supplier")
 
         supplier_df = data_store.get_supplier()
-        analysis = self._run_full_analysis(supplier_df)
+        is_urgent = any(word in query.lower() for word in ["urgent", "asap", "emergency", "fast"])
+        analysis = self._run_full_analysis(supplier_df, is_urgent=is_urgent)
 
         # Get RAG context (contracts, supplier docs)
         rag_context = self.get_rag_context(query, document_type="contract")
@@ -51,7 +52,7 @@ class SupplierAgent(BaseAgent):
             extra=analysis,
         )
 
-    def _run_full_analysis(self, supplier_df: pd.DataFrame) -> dict:
+    def _run_full_analysis(self, supplier_df: pd.DataFrame, is_urgent: bool = False) -> dict:
         """Run supplier scoring and ranking."""
         results = {
             "scored_suppliers": [],
@@ -59,6 +60,7 @@ class SupplierAgent(BaseAgent):
             "risk_flagged": [],
             "warnings": [],
             "summary": {},
+            "urgency_mode": is_urgent
         }
 
         for _, row in supplier_df.iterrows():
@@ -71,6 +73,7 @@ class SupplierAgent(BaseAgent):
                 on_time_rate=float(row.get("on_time_rate", 0)),
                 lead_time=float(row.get("lead_time", 30)),
                 quality_score=float(row.get("quality_score", 0)),
+                is_urgent=is_urgent
             )
 
             scored = {
@@ -158,7 +161,7 @@ SUPPLIER RANKINGS (by composite score):
               f"Quality: {s['quality_score']:.0%}, Risk: {s['risk_score']:.0%}"
               for i, s in enumerate(top_5))}
 
-Scoring weights: Cost 30%, Reliability 35%, Speed 20%, Quality 15%
+Scoring context: Is Urgent Mode Active? {'YES' if analysis['urgency_mode'] else 'NO'}
 Top recommended: {analysis['top_supplier']['name'] if analysis['top_supplier'] else 'N/A'}
 Risk-flagged: {[r['name'] for r in analysis['risk_flagged']]}
 {context_text}

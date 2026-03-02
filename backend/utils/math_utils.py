@@ -134,7 +134,8 @@ def compute_supplier_score(
     on_time_rate: float,
     lead_time: float,
     quality_score: float,
-    weights: dict = None
+    weights: dict = None,
+    is_urgent: bool = False
 ) -> float:
     """
     Multi-criteria weighted supplier score.
@@ -145,16 +146,18 @@ def compute_supplier_score(
         lead_time: Days, lower is better (will be inverted)
         quality_score: 0-1 scale, higher is better
         weights: Custom weights dict {cost, reliability, speed, quality}
+        is_urgent: Shifts priority to speed
     
     Returns:
         Composite score 0-100 (higher = better supplier)
-    
-    Edge cases:
-        - Missing metrics (0 or None): penalized with score of 0 for that dimension
-        - cost_index = 0: treated as best possible cost
-        - lead_time = 0: treated as instant delivery (best speed)
     """
-    w = weights or {"cost": 0.30, "reliability": 0.35, "speed": 0.20, "quality": 0.15}
+    if not weights:
+        if is_urgent:
+            w = {"cost": 0.10, "reliability": 0.35, "speed": 0.45, "quality": 0.10}
+        else:
+            w = {"cost": 0.40, "reliability": 0.30, "speed": 0.10, "quality": 0.20}
+    else:
+        w = weights
 
     # Normalize: higher is better for all dimensions
     # Cost: invert (lower cost = higher score)

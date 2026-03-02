@@ -8,6 +8,7 @@ from typing import List, Optional, Dict
 from rag.vector_store import similarity_search
 from utils.errors import RetrievalError
 from utils.logger import rag_logger
+from data.store import data_store
 
 
 def retrieve_context(
@@ -92,6 +93,28 @@ def retrieve_context(
     }
 
 
+def _inventory_to_text_chunks() -> str:
+    """
+    Convert live Pandas inventory data into natural language chunks.
+    This enables Structured RAG, allowing the LLM to 'read' the live table.
+    """
+    if not data_store.has_data("inventory"):
+        return ""
+        
+    df = data_store.get_inventory()
+    if df.empty:
+        return ""
+        
+    chunks = ["\n--- LIVE INVENTORY STATUS ---"]
+    for _, row in df.head(25).iterrows():
+        sku = row.get("sku", "Unknown SKU")
+        name = row.get("name", "Unknown Product")
+        on_hand = row.get("on_hand", 0)
+        chunks.append(f"Product {name} (SKU {sku}) currently has {on_hand} units in stock.")
+        
+    return "\n".join(chunks)
+
+
 def retrieve_for_agent(
     query: str,
     document_type: Optional[str] = None,
@@ -103,6 +126,7 @@ def retrieve_for_agent(
     
     Used by agents that need document context (e.g., Supplier Agent
     querying contract docs).
+    Also injects live Structured RAG table data.
     """
     filter_dict = {}
     if document_type:
@@ -110,8 +134,16 @@ def retrieve_for_agent(
     if supplier_name:
         filter_dict["supplier_name"] = supplier_name
 
-    return retrieve_context(
+    rag_result = retrieve_context(
         query=query,
         k=k,
         filter_dict=filter_dict if filter_dict else None,
     )
+    
+    # Inject Live Structured Data
+    live_inventory_text = _inventory_to_text_chunks()
+    if live_inventory_text:
+        rag_result["context"] = live_inventory_text + "\n\n" + rag_result.get("context", "")
+        rag_result["has_context"] = True
+        
+    return rag_result
