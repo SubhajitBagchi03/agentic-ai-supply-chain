@@ -169,8 +169,12 @@ Write a clear, conversational response. Use **bold** for important values. Use b
 End with a confidence score on its own line, like: Confidence: 0.85"""
 
             else:
+                import datetime
+                current_date = datetime.datetime.now().strftime("%d %B %Y")
                 # KPI-only query (no documents)
                 prompt = f"""You are a helpful supply chain analyst generating an executive report. Answer the user's request using the KPIs below.
+
+CURRENT REPORT DATE: {current_date}
 
 Write a clear, conversational response. Use **bold** for important values. Use bullet points for lists.
 
