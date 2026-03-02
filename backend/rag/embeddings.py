@@ -1,6 +1,7 @@
 """
 Embedding generation module.
-Uses HuggingFace sentence-transformers for local embedding (no API key needed).
+Uses FastEmbed (ONNX) for extremely lightweight, low-memory local embeddings.
+Crucial for preventing Out-Of-Memory crashes on Render's 512MB free tier.
 """
 
 from typing import List
@@ -13,26 +14,25 @@ _embeddings_instance = None
 
 def get_embeddings():
     """
-    Get or create the HuggingFace embeddings instance (singleton).
+    Get or create the FastEmbed embeddings instance (singleton).
     
-    Uses the model specified in config (default: all-MiniLM-L6-v2).
-    First call will download the model (~80MB).
+    Uses ONNX runtime instead of PyTorch to keep RAM usage under 100MB.
+    First call will download the small optimized model.
     """
     global _embeddings_instance
 
     if _embeddings_instance is None:
-        from langchain_huggingface import HuggingFaceEmbeddings
-        from config import settings
+        from langchain_community.embeddings.fastembed import FastEmbedEmbeddings
 
-        rag_logger.info(f"Loading embedding model: {settings.embedding_model}")
+        rag_logger.info("Loading lightweight FastEmbed (ONNX) embedding model...")
 
-        _embeddings_instance = HuggingFaceEmbeddings(
-            model_name=settings.embedding_model,
-            model_kwargs={"device": "cpu"},
-            encode_kwargs={"normalize_embeddings": True},
+        _embeddings_instance = FastEmbedEmbeddings(
+            # BAAI/bge-small-en-v1.5 is default in FastEmbed, highly optimized and very small
+            model_name="BAAI/bge-small-en-v1.5",
+            max_length=512
         )
 
-        rag_logger.info("Embedding model loaded successfully")
+        rag_logger.info("FastEmbed model loaded successfully (Low RAM mode)")
 
     return _embeddings_instance
 

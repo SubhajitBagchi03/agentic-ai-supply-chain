@@ -18,7 +18,8 @@ langchain-community
 chromadb
 
 # === Embeddings ===
-sentence-transformers
+# Replaced sentence-transformers with fastembed for Render 512MB RAM compatibility
+fastembed
 
 # === Data Processing ===
 pandas
