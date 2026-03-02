@@ -5,7 +5,7 @@ import { getHealth, getAlerts } from '../services/api';
 import {
   Package, Users, Truck, FileText, AlertTriangle,
   TrendingUp, Activity, Shield, ArrowUpRight,
-  Bell, CheckCircle
+  Bell, CheckCircle, Check
 } from 'lucide-react';
 
 const ALERT_ICONS = {
