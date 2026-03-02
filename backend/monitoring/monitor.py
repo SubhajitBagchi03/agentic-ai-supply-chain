@@ -139,6 +139,30 @@ class MonitoringLoop:
                 source="inventory_monitor",
             )
 
+        # Historical Conflict Detection (SQLite ledger comparison)
+        try:
+            from data.history import get_previous_upload
+            prev_df = get_previous_upload("inventory")
+            if not prev_df.empty and "sku" in prev_df.columns:
+                for _, row in df.iterrows():
+                    sku = row.get("sku")
+                    on_hand = float(row.get("on_hand", 0))
+                    prev_row = prev_df[prev_df["sku"] == sku]
+                    if not prev_row.empty:
+                        prev_on_hand = float(prev_row.iloc[0].get("on_hand", 0))
+                        # Flag if stock dropped abruptly > 80% and didn't start at zero
+                        if prev_on_hand > 5 and (prev_on_hand - on_hand) / prev_on_hand > 0.8:
+                            alert_store.add_alert(
+                                alert_type="risk",
+                                severity="critical",
+                                title=f"HISTORICAL CONFLICT: {sku}",
+                                message=f"SKU {sku} stock plummeted from {prev_on_hand} to {on_hand} since last upload.",
+                                dedup_key=f"hist_conflict:{sku}:{prev_on_hand}_{on_hand}",
+                                source="inventory_monitor",
+                            )
+        except Exception as e:
+            api_logger.warning("Failed to run historical conflict check: %s", str(e))
+
     # ── Shipment Checks ───────────────────────────────────────────────
 
     async def _check_shipments(self):
