@@ -1,7 +1,7 @@
 shipment_id,sku,origin,destination,status,planned_date,actual_date,delay_days,carrier
 SHP001,SKU001,Shanghai,Warehouse-East,delivered,2026-02-10,2026-02-10,0,FastFreight
 SHP002,SKU002,Mumbai,Warehouse-West,delivered,2026-02-12,2026-02-15,3,OceanLine
-SHP003,SKU003,Shenzhen,Warehouse-East,in_transit,2026-02-20,,0,FastFreight
+SHP003,SKU003,Shenzhen,Warehouse-East,delayed,2026-02-20,,5,FastFreight
 SHP004,SKU004,Chicago,Warehouse-Central,delivered,2026-02-18,2026-02-18,0,DomesticExpress
 SHP005,SKU005,Hamburg,Warehouse-East,delayed,2026-02-15,,7,EuroShip
 SHP006,SKU006,Tokyo,Warehouse-West,in_transit,2026-02-22,,0,AsiaPac
