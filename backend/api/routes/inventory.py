@@ -42,7 +42,7 @@ async def upload_inventory(file: UploadFile = File(...)):
         df = await load_csv_from_upload(content, file.filename)
 
         # Validate schema + data quality
-        df, warnings = validate_dataset(df, "inventory")
+        df, warnings = await validate_dataset(df, "inventory")
 
         # Store in data store
         data_store.set_inventory(df)

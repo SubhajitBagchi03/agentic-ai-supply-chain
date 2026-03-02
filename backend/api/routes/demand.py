@@ -37,7 +37,7 @@ async def upload_demand(file: UploadFile = File(...)):
 
     try:
         df = await load_csv_from_upload(content, file.filename)
-        df, warnings = validate_dataset(df, "demand")
+        df, warnings = await validate_dataset(df, "demand")
         data_store.set_demand(df)
 
         api_logger.info(

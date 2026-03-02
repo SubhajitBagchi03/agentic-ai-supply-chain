@@ -83,7 +83,7 @@ class MonitoringLoop:
                 try:
                     df = pd.read_csv(csv_url)
                     from data.validator import validate_dataset
-                    df, _ = validate_dataset(df, dataset_type)
+                    df, _ = await validate_dataset(df, dataset_type)
                     setter = getattr(data_store, f"set_{dataset_type}", None)
                     if setter:
                         setter(df)

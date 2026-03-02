@@ -25,19 +25,46 @@ SCHEMA_MAP = {
 }
 
 
-def validate_csv_schema(df: pd.DataFrame, dataset_type: str) -> list:
+async def _map_columns_with_llm(actual_columns: list, required_columns: list) -> dict:
+    import json
+    from langchain_groq import ChatGroq
+    from config import settings
+    
+    try:
+        llm = ChatGroq(
+            api_key=settings.groq_api_key,
+            model_name=settings.groq_model,
+            temperature=0.0
+        )
+        
+        prompt = f"""You are a data engineering assistant.
+Your task is to map a list of ACTUAL columns from an uploaded CSV to a target list of REQUIRED columns for a database schema.
+
+ACTUAL COLUMNS (from CSV): {actual_columns}
+REQUIRED COLUMNS (Target Schema): {required_columns}
+
+Output ONLY a valid JSON dictionary where the keys are the ACTUAL column names and the values are their corresponding REQUIRED column names. Look for semantic matches (e.g., 'Item Code' -> 'sku', 'Current Stock' -> 'on_hand', 'Delivery Status' -> 'status'). Do not map an actual column if it does not semantically match any required column. ONLY output JSON, no markdown formatting.
+"""
+        response = llm.invoke(prompt)
+        content = response.content.strip()
+        if content.startswith("```json"):
+            content = content[7:-3].strip()
+        elif content.startswith("```"):
+            content = content[3:-3].strip()
+            
+        mapping = json.loads(content)
+        # Keep only valid targets
+        valid_mapping = {k: v for k, v in mapping.items() if v in required_columns}
+        return valid_mapping
+    except Exception as e:
+        data_logger.error(f"LLM Schema Mapping failed: {str(e)}")
+        return {}
+
+
+async def validate_csv_schema(df: pd.DataFrame, dataset_type: str) -> list:
     """
     Validate that DataFrame has required columns for the dataset type.
-    
-    Args:
-        df: Uploaded DataFrame
-        dataset_type: One of 'inventory', 'supplier', 'shipment', 'demand'
-    
-    Returns:
-        List of warning messages
-    
-    Raises:
-        SchemaValidationError: If required columns are missing
+    Uses AI semantic mapping to map dynamic headers if there's a mismatch.
     """
     required = SCHEMA_MAP.get(dataset_type)
     if not required:
@@ -53,6 +80,18 @@ def validate_csv_schema(df: pd.DataFrame, dataset_type: str) -> list:
     extra = actual - required_set
 
     warnings = []
+
+    if missing:
+        data_logger.info(f"Schema mismatch detected. Triggering AI Column Mapping for {dataset_type}...")
+        mapping = await _map_columns_with_llm(list(actual), required)
+        if mapping:
+            data_logger.info(f"AI Column Mapping result: {mapping}")
+            df.rename(columns=mapping, inplace=True)
+            # Re-evaluate
+            actual = set(df.columns.tolist())
+            missing = required_set - actual
+            extra = actual - required_set
+            warnings.append(f"AI Column Mapping successfully applied: {mapping}")
 
     if missing:
         raise SchemaValidationError(
@@ -175,7 +214,7 @@ def validate_demand_data(df: pd.DataFrame) -> list:
     return warnings
 
 
-def validate_dataset(df: pd.DataFrame, dataset_type: str) -> Tuple[pd.DataFrame, list]:
+async def validate_dataset(df: pd.DataFrame, dataset_type: str) -> Tuple[pd.DataFrame, list]:
     """
     Full validation pipeline: schema + data quality.
     
@@ -190,7 +229,7 @@ def validate_dataset(df: pd.DataFrame, dataset_type: str) -> Tuple[pd.DataFrame,
     df.columns = df.columns.str.strip().str.lower().str.replace(" ", "_")
 
     # Schema validation
-    warnings = validate_csv_schema(df, dataset_type)
+    warnings = await validate_csv_schema(df, dataset_type)
 
     # Data quality validation
     quality_validators = {

@@ -101,7 +101,7 @@ async def connect_sheet(req: SheetLinkRequest):
     df = await _fetch_sheet_data(req.url)
 
     try:
-        df, warnings = validate_dataset(df, req.dataset_type)
+        df, warnings = await validate_dataset(df, req.dataset_type)
     except SchemaValidationError as e:
         raise HTTPException(status_code=422, detail={
             "error": e.message,
@@ -157,7 +157,7 @@ async def refresh_all():
     for dataset_type, csv_url in _sheet_urls.items():
         try:
             df = pd.read_csv(csv_url)
-            df, _ = validate_dataset(df, dataset_type)
+            df, _ = await validate_dataset(df, dataset_type)
             setter = getattr(data_store, f"set_{dataset_type}", None)
             if setter:
                 setter(df)

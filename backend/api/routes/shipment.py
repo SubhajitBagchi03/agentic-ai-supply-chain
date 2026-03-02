@@ -37,7 +37,7 @@ async def upload_shipment(file: UploadFile = File(...)):
 
     try:
         df = await load_csv_from_upload(content, file.filename)
-        df, warnings = validate_dataset(df, "shipment")
+        df, warnings = await validate_dataset(df, "shipment")
         data_store.set_shipment(df)
 
         api_logger.info(

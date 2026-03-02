@@ -37,7 +37,7 @@ async def upload_supplier(file: UploadFile = File(...)):
 
     try:
         df = await load_csv_from_upload(content, file.filename)
-        df, warnings = validate_dataset(df, "supplier")
+        df, warnings = await validate_dataset(df, "supplier")
         data_store.set_supplier(df)
 
         api_logger.info(
