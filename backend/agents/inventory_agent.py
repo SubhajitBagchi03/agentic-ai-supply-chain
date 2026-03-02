@@ -14,6 +14,8 @@ from utils.math_utils import (
     compute_stockout_probability,
     compute_demand_volatility,
     detect_demand_anomaly,
+    compute_classic_eoq,
+    compute_z_score_safety_stock,
 )
 
 
@@ -108,13 +110,20 @@ class InventoryAgent(BaseAgent):
                         f"CRITICAL: {'Negative' if on_hand < 0 else 'Zero'} stock for {sku}"
                     )
 
-            # --- Reorder computation ---
+            # --- Reorder computation & Advanced Math ---
             reorder_qty = compute_reorder_quantity(avg_demand, lead_time, safety_stock, on_hand)
+            
+            annual_demand = avg_demand * 365
+            eoq = compute_classic_eoq(annual_demand, order_cost=50.0, holding_cost_per_unit=2.5) # Assumptions for S and H
+            optimal_safety_stock = compute_z_score_safety_stock(lead_time, demand_std_dev=avg_demand * 0.2) # Assuming 20% volatility
+            
             if reorder_qty > 0:
                 results["reorder_recommendations"].append({
                     "sku": sku,
                     "name": row.get("name", ""),
                     "reorder_quantity": reorder_qty,
+                    "economic_order_quantity_eoq": eoq,
+                    "calculated_ideal_safety_stock": optimal_safety_stock,
                     "supplier_id": row.get("supplier_id", ""),
                     "days_until_stockout": compute_days_until_stockout(on_hand, avg_demand),
                     "stockout_probability": compute_stockout_probability(

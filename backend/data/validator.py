@@ -61,6 +61,21 @@ Output ONLY a valid JSON dictionary where the keys are the ACTUAL column names a
         return {}
 
 
+def _scrub_data_types(df: pd.DataFrame) -> pd.DataFrame:
+    """Scrub messy data types (e.g., $1,500.00 -> 1500.0) across all columns."""
+    for col in df.columns:
+        # Remove entirely string contents like $ and , from what might be numbers
+        cleaned = df[col].astype(str).str.replace(r'[$,£€% ]', '', regex=True)
+        # Try to convert to numeric, coerce errors to NaN
+        temp = pd.to_numeric(cleaned, errors='coerce')
+        
+        # If the column was genuinely mostly numbers (like a stripped currency column)
+        # then at least 50% of the non-null rows will successfully cast to valid floats.
+        if len(cleaned) > 0 and (temp.notna().sum() / len(cleaned)) > 0.5:
+            df[col] = temp
+    return df
+
+
 async def validate_csv_schema(df: pd.DataFrame, dataset_type: str) -> list:
     """
     Validate that DataFrame has required columns for the dataset type.
@@ -230,6 +245,9 @@ async def validate_dataset(df: pd.DataFrame, dataset_type: str) -> Tuple[pd.Data
 
     # Schema validation
     warnings = await validate_csv_schema(df, dataset_type)
+
+    # Data type scrubbing (The Clean Room)
+    df = _scrub_data_types(df)
 
     # Data quality validation
     quality_validators = {

@@ -9,9 +9,33 @@ from typing import Optional
 
 
 # ============================================================
-# 1. Reorder Point (ROP) Formula
+# 1. Reorder Point (ROP) Formula & Advanced Math
 #    ROP = μ_d × L + Z × σ_d × √L
 # ============================================================
+
+def compute_classic_eoq(annual_demand: float, order_cost: float, holding_cost_per_unit: float) -> float:
+    """
+    Compute Economic Order Quantity (EOQ).
+    Formula: sqrt((2 * D * S) / H)
+    """
+    if holding_cost_per_unit <= 0 or annual_demand <= 0 or order_cost <= 0:
+        return 0.0
+    eoq = math.sqrt((2 * annual_demand * order_cost) / holding_cost_per_unit)
+    return round(eoq, 2)
+
+def compute_z_score_safety_stock(
+    lead_time_days: float, 
+    demand_std_dev: float, 
+    service_level_z: float = 1.65
+) -> float:
+    """
+    Compute Safety Stock using Z-Score.
+    Formula: Z * std_dev * sqrt(lead_time)
+    """
+    lead_time = max(lead_time_days, 1.0)
+    std_dev = max(demand_std_dev, 0.0)
+    safety_stock = service_level_z * std_dev * math.sqrt(lead_time)
+    return round(safety_stock, 2)
 
 def compute_reorder_point(
     avg_daily_demand: float,

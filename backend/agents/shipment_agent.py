@@ -76,6 +76,8 @@ class ShipmentAgent(BaseAgent):
         status_counts = shipment_df["status"].str.lower().value_counts().to_dict()
         results["status_breakdown"] = status_counts
 
+        inventory_df = data_store.get_inventory() if data_store.has_data("inventory") else None
+
         for _, row in shipment_df.iterrows():
             shipment_id = row["shipment_id"]
             status = str(row["status"]).lower()
@@ -89,6 +91,23 @@ class ShipmentAgent(BaseAgent):
                     congestion_factor=0,
                 )
 
+                # Cascade Risk Detection
+                cascade_risk = None
+                if inventory_df is not None and not inventory_df.empty:
+                    sku_inv = inventory_df[inventory_df["sku"] == row.get("sku", "")]
+                    if not sku_inv.empty:
+                        inv_row = sku_inv.iloc[0]
+                        on_hand = float(inv_row["on_hand"])
+                        avg_demand = float(inv_row["avg_daily_demand"])
+                        if avg_demand > 0:
+                            days_until_stockout = on_hand / avg_demand
+                            if days_until_stockout < delay_info["predicted_delay_days"]:
+                                cascade_risk = {
+                                    "days_until_stockout": round(days_until_stockout, 1),
+                                    "predicted_delay": delay_info["predicted_delay_days"],
+                                    "dry_stock_days": round(delay_info["predicted_delay_days"] - days_until_stockout, 1)
+                                }
+
                 shipment_info = {
                     "shipment_id": shipment_id,
                     "sku": row.get("sku", ""),
@@ -99,11 +118,16 @@ class ShipmentAgent(BaseAgent):
                     "delay_days": delay_days,
                     "severity": delay_info["severity"],
                     "predicted_delay": delay_info["predicted_delay_days"],
+                    "cascade_risk": cascade_risk,
                 }
 
                 results["delayed_shipments"].append(shipment_info)
 
-                if delay_info["severity"] in ("high", "critical"):
+                if cascade_risk:
+                    results["warnings"].append(
+                        f"CRITICAL CASCADE RISK: Shipment {shipment_id} delay will cause a stockout for SME {row.get('sku')} for {cascade_risk['dry_stock_days']} days."
+                    )
+                elif delay_info["severity"] in ("high", "critical"):
                     results["warnings"].append(
                         f"{'CRITICAL' if delay_info['severity'] == 'critical' else 'HIGH'}: "
                         f"Shipment {shipment_id} delayed {delay_days} days"
