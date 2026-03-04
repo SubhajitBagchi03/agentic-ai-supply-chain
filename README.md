@@ -2,6 +2,13 @@
 
 This is a full-stack, AI-powered control tower for supply chain management. It features a React frontend and a FastAPI backend, utilizing specialized AI agents (via LangChain and Groq) to analyze inventory, shipments, supplier risk, and documents via RAG (ChromaDB).
 
+### Key Features
+
+- **Live Visual Dashboard:** Real-time KPIs (Fill Rate, Delay Rates) and dynamic charts (Recharts) for inventory health and supplier comparison.
+- **AI Query Engine:** Natural language conversational interface to ask questions about your operations.
+- **SKU Decisions Page:** Single-item deep dives bringing together stock levels, shipment status, and a multi-agent AI risk analysis.
+- **PDF Report Generation:** One-click enterprise report exporting with agentic confidence scoring.
+
 ## Architecture
 
 - **Frontend:** React + Vite + TailwindCSS

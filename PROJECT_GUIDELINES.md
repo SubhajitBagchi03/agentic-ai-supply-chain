@@ -280,8 +280,10 @@ React frontend should:
 
 - Provide clear feedback
 - Show loading states
+- Preserve user state (`sessionStorage`) to survive page navigation
 - Display alerts prominently
 - Explain recommendations
+- Support exporting artifacts (e.g., PDF)
 
 Avoid cluttered interfaces.
 

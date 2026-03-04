@@ -12,7 +12,7 @@ The system follows a clear pipeline: **Input → Intent Detection → Agent Rout
 graph TD
     %% Frontend Layer
     subgraph Frontend [React Frontend]
-        UI[User Dashboard & Chat Interface]
+        UI[User Dashboard (Live Charts), AI Query Chat, & SKU Decisions Deep-Dive]
         Upload[Upload CSVs & PDFs]
         Alerts[Click Action on Live Alert]
     end
@@ -116,7 +116,7 @@ Multiple agents might have been called. For example, `ShipmentAgent` analyzed th
 
 ### 5. Final Output
 
-The structured JSON is passed back to the React UI, which uses a custom Markdown parser (`utils/markdown.jsx`) to render beautiful tables, bold headers, and bullet points for the user to read.
+The structured JSON is passed back to the React UI, which uses a custom Markdown parser (`utils/markdown.jsx`) to render beautiful tables, bold headers, and bullet points for the user to read. For formal documentation, users can trigger the **PDF Export** engine to save multi-agent outputs locally.
 
 ---
 

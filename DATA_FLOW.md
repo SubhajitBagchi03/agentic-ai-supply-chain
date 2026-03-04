@@ -47,7 +47,8 @@ Decision Outputs
 ├── Alerts
 ├── Recommendations
 ├── Reports
-└── Explanations
+├── Explanations
+└── PDF Exports
 │
 ▼
 

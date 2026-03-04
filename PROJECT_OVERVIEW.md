@@ -462,12 +462,25 @@ ChromaDB
 
 **Dashboard must show:**
 
-- Alerts
-- Agent actions
-- Decision chain
-- Confidence scores
+- Real-time calculated KPIs (Fill Rate, Days of Supply)
+- Visual data charts (Inventory vs Safety Stock, Risk Distributions)
+- Live active alerts
+
+**Decisions Page must show:**
+
+- Cross-referenced single SKU status
+- AI Multi-Agent reasoning chain with markdown formatting
+- State persistence during navigation
+
+**Reports must support:**
+
+- AI agent consensus and formatting
+- Downloadable artifacts (PDF export)
 
 **UX rules:**
+
+- Fast feedback loops and loading states when agents are "thinking"
+- Graceful degradation if backend is unavailable
 
 ## TESTING
 
