@@ -165,11 +165,22 @@ export default function Header({ title, subtitle }) {
           >
             <Menu className="w-5 h-5" />
           </button>
-          <div className="min-w-0">
+
+          {/* Desktop Title */}
+          <div className="hidden md:block min-w-0">
             <h2 className="text-lg font-semibold text-foreground truncate">{title}</h2>
             {subtitle && (
-              <p className="text-sm text-muted-foreground mt-0.5 hidden sm:block truncate">{subtitle}</p>
+              <p className="text-sm text-muted-foreground mt-0.5 truncate">{subtitle}</p>
             )}
+          </div>
+
+          {/* Mobile Title with Logo */}
+          <div className="md:hidden flex items-center gap-2 min-w-0">
+            <img src="/logo.png" alt="Logo" className="w-7 h-7 object-contain shrink-0" />
+            <div className="min-w-0">
+              <h1 className="text-sm font-bold text-foreground leading-tight truncate">Supply Chain</h1>
+              <h2 className="text-[11px] text-muted-foreground leading-tight truncate">{title}</h2>
+            </div>
           </div>
         </div>
 

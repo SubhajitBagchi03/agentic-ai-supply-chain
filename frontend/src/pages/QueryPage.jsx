@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { sendQuery } from '../services/api';
 import {
   Send, Loader2, Bot, AlertTriangle,
-  ChevronDown, ChevronUp, Plus, Clock, Sparkles
+  ChevronDown, ChevronUp, Plus, Clock, Sparkles, Menu
 } from 'lucide-react';
 
 import { renderMarkdown } from '../utils/markdown';
@@ -159,6 +159,20 @@ export default function QueryPage() {
 
   return (
     <div className="flex flex-col h-screen">
+      {/* Mobile-only Header for Sidebar Toggle */}
+      <div className="md:hidden flex items-center justify-between px-4 py-3 bg-background border-b border-black/5 shrink-0 z-40 relative">
+        <div className="flex items-center gap-2 min-w-0">
+          <button 
+            className="p-2 -ml-2 rounded-lg text-muted-foreground hover:bg-gray-100 transition-colors shrink-0"
+            onClick={() => window.dispatchEvent(new CustomEvent('toggleSidebar'))}
+          >
+            <Menu className="w-5 h-5" />
+          </button>
+          <img src="/logo.png" alt="Logo" className="w-6 h-6 object-contain shrink-0" />
+          <h1 className="text-sm font-bold text-foreground truncate">Supply Chain Assistant</h1>
+        </div>
+      </div>
+
       {/* Chat Area */}
       <div className="flex-1 overflow-y-auto px-4 md:px-6 py-4 md:py-6">
         <div className="max-w-3xl mx-auto space-y-6">
