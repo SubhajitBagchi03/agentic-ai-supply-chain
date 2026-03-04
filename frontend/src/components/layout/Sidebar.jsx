@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard, Package, Truck, Users, FileText,
-  MessageSquare, BarChart3, X
+  MessageSquare, BarChart3, X, Brain
 } from 'lucide-react';
 
 const navItems = [
@@ -13,6 +13,7 @@ const navItems = [
   { to: '/documents', icon: FileText, label: 'Documents' },
   { to: '/query', icon: MessageSquare, label: 'AI Query' },
   { to: '/reports', icon: BarChart3, label: 'Reports' },
+  { to: '/decisions', icon: Brain, label: 'Decisions' },
 ];
 
 export default function Sidebar() {

@@ -134,3 +134,13 @@ export async function getSheetStatus() {
   return request('/sheets/status');
 }
 
+// === Analytics APIs ===
+
+export async function getDashboardAnalytics() {
+  return request('/analytics/dashboard');
+}
+
+export async function getSkuDecisions(sku) {
+  return request(`/analytics/decisions/${encodeURIComponent(sku)}`);
+}
+

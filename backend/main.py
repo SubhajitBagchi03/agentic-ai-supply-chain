@@ -21,7 +21,7 @@ from utils.errors import AppError
 from utils.logger import api_logger
 
 # Import route modules
-from api.routes import inventory, supplier, shipment, demand, documents, query, health, alerts, sheets
+from api.routes import inventory, supplier, shipment, demand, documents, query, health, alerts, sheets, analytics
 from monitoring.monitor import monitor
 
 
@@ -58,6 +58,7 @@ def create_app() -> FastAPI:
     app.include_router(query.router)
     app.include_router(alerts.router)
     app.include_router(sheets.router)
+    app.include_router(analytics.router)
 
     # --- Global Exception Handler ---
     @app.exception_handler(AppError)

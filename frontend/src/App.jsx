@@ -8,6 +8,7 @@ import ShipmentsPage from './pages/ShipmentsPage';
 import DocumentsPage from './pages/DocumentsPage';
 import QueryPage from './pages/QueryPage';
 import ReportsPage from './pages/ReportsPage';
+import DecisionsPage from './pages/DecisionsPage';
 import { resetSystem } from './services/api';
 
 export default function App() {
@@ -55,6 +56,7 @@ export default function App() {
           <Route path="/documents" element={<DocumentsPage />} />
           <Route path="/query" element={<QueryPage />} />
           <Route path="/reports" element={<ReportsPage />} />
+          <Route path="/decisions" element={<DecisionsPage />} />
         </Routes>
       </AppLayout>
     </BrowserRouter>

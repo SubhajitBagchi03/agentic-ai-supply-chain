@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import Header from '../components/layout/Header';
 import { sendQuery } from '../services/api';
-import { BarChart3, Loader2, AlertTriangle, TrendingUp, Shield, Package, Lightbulb } from 'lucide-react';
+import { BarChart3, Loader2, AlertTriangle, TrendingUp, Shield, Package, Lightbulb, Download } from 'lucide-react';
 import { renderMarkdown } from '../utils/markdown';
+import { jsPDF } from 'jspdf';
 
 export default function ReportsPage() {
   const [loading, setLoading] = useState(false);
@@ -35,6 +36,96 @@ export default function ReportsPage() {
     }
   };
 
+  const downloadReport = () => {
+    if (!report) return;
+    const doc = new jsPDF();
+    const pageW = doc.internal.pageSize.getWidth();
+    const margin = 18;
+    const maxW = pageW - margin * 2;
+    let y = 20;
+
+    const addPage = () => { doc.addPage(); y = 20; };
+    const checkPage = (needed = 20) => { if (y + needed > 275) addPage(); };
+
+    // Title
+    doc.setFontSize(20);
+    doc.setFont('helvetica', 'bold');
+    doc.text('AI Supply Chain Report', margin, y);
+    y += 10;
+
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(120);
+    doc.text(`Generated: ${new Date().toLocaleString()}`, margin, y);
+    y += 5;
+    doc.text(`Agents: ${report.metadata?.agents_used?.join(', ') || 'N/A'}  |  Processing: ${report.metadata?.processing_time_ms || 0}ms`, margin, y);
+    y += 10;
+
+    doc.setDrawColor(200);
+    doc.line(margin, y, pageW - margin, y);
+    y += 8;
+
+    // Each agent response
+    report.responses?.forEach((resp) => {
+      checkPage(30);
+      doc.setTextColor(40);
+      doc.setFontSize(13);
+      doc.setFont('helvetica', 'bold');
+      doc.text(`${resp.agent}  (${(resp.confidence * 100).toFixed(0)}% confidence)`, margin, y);
+      y += 8;
+
+      if (resp.reasoning) {
+        checkPage(15);
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(80);
+        doc.text('Analysis', margin, y);
+        y += 5;
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(60);
+        const lines = doc.splitTextToSize(resp.reasoning, maxW);
+        lines.forEach((line) => {
+          checkPage(6);
+          doc.text(line, margin, y);
+          y += 5;
+        });
+        y += 4;
+      }
+
+      if (resp.recommendation) {
+        checkPage(15);
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(80);
+        doc.text('Recommendations', margin, y);
+        y += 5;
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(60);
+        const lines = doc.splitTextToSize(resp.recommendation, maxW);
+        lines.forEach((line) => {
+          checkPage(6);
+          doc.text(line, margin, y);
+          y += 5;
+        });
+        y += 4;
+      }
+
+      checkPage(8);
+      doc.setDrawColor(220);
+      doc.line(margin, y, pageW - margin, y);
+      y += 8;
+    });
+
+    const pdfData = doc.output('datauristring');
+    const a = document.createElement('a');
+    a.href = pdfData;
+    a.download = `supply_chain_report_${new Date().toISOString().slice(0, 10)}.pdf`;
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => document.body.removeChild(a), 100);
+  };
+
   return (
     <>
       <Header title="Reports" subtitle="Generate supply chain intelligence reports" />
@@ -61,23 +152,34 @@ export default function ReportsPage() {
                 <p className="text-sm text-muted-foreground">AI-generated supply chain analysis</p>
               </div>
             </div>
-            <button
-              onClick={generateReport}
-              disabled={loading}
-              className="px-5 py-2.5 bg-primary text-primary-foreground rounded-lg font-medium text-sm transition-all hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-            >
-              {loading ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  Generating...
-                </>
-              ) : (
-                <>
-                  <BarChart3 className="w-4 h-4" />
-                  Generate Report
-                </>
+            <div className="flex items-center gap-2">
+              {report && (
+                <button
+                  onClick={downloadReport}
+                  className="px-4 py-2.5 bg-emerald-600 text-white rounded-lg font-medium text-sm transition-all hover:bg-emerald-700 flex items-center gap-2"
+                >
+                  <Download className="w-4 h-4" />
+                  Download
+                </button>
               )}
-            </button>
+              <button
+                onClick={generateReport}
+                disabled={loading}
+                className="px-5 py-2.5 bg-primary text-primary-foreground rounded-lg font-medium text-sm transition-all hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              >
+                {loading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <BarChart3 className="w-4 h-4" />
+                    Generate Report
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         </div>
 
