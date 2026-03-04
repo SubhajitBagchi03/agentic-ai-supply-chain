@@ -6,6 +6,7 @@ import {
   CheckCircle, Loader2, ArrowRight, Shield,
   TrendingDown, Clock, Sparkles, ChevronDown, ChevronUp
 } from 'lucide-react';
+import { renderMarkdown } from '../utils/markdown';
 
 const STATUS_STYLES = {
   CRITICAL: { bg: 'bg-red-50', text: 'text-red-700', border: 'border-red-200', dot: 'bg-red-500' },
@@ -61,7 +62,7 @@ export default function DecisionsPage() {
     setAiLoading(true);
     setShowAi(true);
     try {
-      const res = await sendQuery(`Give me a complete risk analysis and recommended actions for SKU ${skuInput.trim()}. Include reorder suggestions, supplier evaluation, and any shipment concerns.`);
+      const res = await sendQuery(`Give me a very short, highly structured risk analysis and recommended actions for SKU ${skuInput.trim()}. Use bullet points for readability. Be concise. Include brief reorder suggestions, supplier evaluation, and any immediate shipment concerns.`);
       setAiAnalysis(res);
     } catch (e) {
       setAiAnalysis({ error: e.message });
@@ -291,11 +292,14 @@ export default function DecisionsPage() {
                   {aiAnalysis.responses?.map((resp, i) => (
                     <div key={i} className="mb-3 last:mb-0">
                       <p className="text-[10px] font-semibold text-blue-600 uppercase tracking-wider mb-1">{resp.agent}</p>
-                      <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">{resp.reasoning}</p>
+                      <div className="text-sm text-foreground leading-relaxed">
+                        {renderMarkdown(resp.reasoning)}
+                      </div>
                       {resp.recommendation && resp.recommendation !== resp.reasoning && (
-                        <p className="text-sm text-foreground mt-2 bg-white/60 rounded-lg p-2 border border-blue-100">
-                          <strong>Recommendation:</strong> {resp.recommendation}
-                        </p>
+                        <div className="text-sm text-foreground mt-2 bg-white/60 rounded-lg p-3 border border-blue-100">
+                          <strong>Recommendation:</strong>
+                          <div className="mt-1">{renderMarkdown(resp.recommendation)}</div>
+                        </div>
                       )}
                     </div>
                   ))}
