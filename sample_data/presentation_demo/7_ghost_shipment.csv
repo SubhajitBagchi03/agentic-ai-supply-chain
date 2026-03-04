@@ -1,0 +1,2 @@
+shipment_id,sku,origin,destination,carrier,planned_date,delay_days,status
+SHP-404,SKU-GHOST,Unknown Factory,Main Hub,Ghost Freight,2026-05-01,0,in_transit

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Bell, Search, AlertTriangle, Package, Truck, Shield, Check, X,
-  LayoutDashboard, Users, FileText, MessageSquare, BarChart3 } from 'lucide-react';
+  LayoutDashboard, Users, FileText, MessageSquare, BarChart3, Menu } from 'lucide-react';
 import { getAlerts, getUnreadCount, markAlertRead, markAllAlertsRead } from '../../services/api';
 
 const ALERT_ICONS = {
@@ -156,13 +156,21 @@ export default function Header({ title, subtitle }) {
   };
 
   return (
-    <header className="sticky top-0 z-40 py-3 px-6 bg-background">
+    <header className="sticky top-0 z-40 py-3 px-4 md:px-6 bg-background">
       <div className="flex items-center justify-between">
-        <div className="min-w-0 mr-4">
-          <h2 className="text-lg font-semibold text-foreground truncate">{title}</h2>
-          {subtitle && (
-            <p className="text-sm text-muted-foreground mt-0.5 truncate">{subtitle}</p>
-          )}
+        <div className="flex items-center gap-3 min-w-0 mr-4">
+          <button 
+            className="md:hidden p-2 -ml-2 rounded-lg text-muted-foreground hover:bg-gray-100 transition-colors shrink-0"
+            onClick={() => window.dispatchEvent(new CustomEvent('toggleSidebar'))}
+          >
+            <Menu className="w-5 h-5" />
+          </button>
+          <div className="min-w-0">
+            <h2 className="text-lg font-semibold text-foreground truncate">{title}</h2>
+            {subtitle && (
+              <p className="text-sm text-muted-foreground mt-0.5 hidden sm:block truncate">{subtitle}</p>
+            )}
+          </div>
         </div>
 
         <div className="flex items-center gap-3 shrink-0">

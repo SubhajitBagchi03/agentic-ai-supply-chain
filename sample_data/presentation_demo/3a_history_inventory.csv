@@ -1,0 +1,3 @@
+sku,name,warehouse,supplier_id,on_hand,avg_daily_demand,lead_time_days,safety_stock
+SKU-102,Copper Wire,East Wing,VEN-01,500,10,5,50
+SKU-505,Lithium Battery,Main Hub,VEN-02,200,5,10,20

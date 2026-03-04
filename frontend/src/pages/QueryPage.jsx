@@ -160,7 +160,7 @@ export default function QueryPage() {
   return (
     <div className="flex flex-col h-screen">
       {/* Chat Area */}
-      <div className="flex-1 overflow-y-auto px-6 py-6">
+      <div className="flex-1 overflow-y-auto px-4 md:px-6 py-4 md:py-6">
         <div className="max-w-3xl mx-auto space-y-6">
 
           {/* Welcome state */}
@@ -293,7 +293,7 @@ export default function QueryPage() {
       </div>
 
       {/* Bottom Input Bar */}
-      <div className="sticky bottom-0 px-6 pb-4 pt-2 bg-gradient-to-t from-[var(--background)] via-[var(--background)] to-transparent">
+      <div className="sticky bottom-0 px-4 md:px-6 pb-4 pt-2 bg-gradient-to-t from-[var(--background)] via-[var(--background)] to-transparent">
         <form onSubmit={handleSubmit} className="max-w-3xl mx-auto">
           <div className="bg-white rounded-3xl border border-black/8 shadow-lg px-4 py-2 flex items-end gap-2">
             <button

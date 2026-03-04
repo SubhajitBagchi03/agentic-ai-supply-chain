@@ -1,0 +1,2 @@
+sku,name,warehouse,supplier_id,on_hand,avg_daily_demand,lead_time_days,safety_stock
+SKU-999,Silicon Wafer,Clean Room,VEN-03,30,10,14,50

@@ -68,7 +68,7 @@ export default function InventoryPage() {
   return (
     <>
       <Header title="Inventory Management" subtitle="Upload inventory dataset and manage stock levels" />
-      <div className="p-6 max-w-3xl mx-auto space-y-5">
+      <div className="p-4 md:p-6 max-w-3xl mx-auto space-y-5">
 
         {/* Tutorial */}
         <div className="glass rounded-xl p-4 animate-slide-up">

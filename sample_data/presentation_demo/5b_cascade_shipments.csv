@@ -1,0 +1,2 @@
+shipment_id,sku,origin,destination,carrier,planned_date,delay_days,status
+SHP-001,SKU-999,Taiwan,California,Ocean Freight,2026-04-15,5,delayed

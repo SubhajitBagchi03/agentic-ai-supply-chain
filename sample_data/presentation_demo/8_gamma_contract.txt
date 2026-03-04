@@ -1,0 +1,10 @@
+MASTER SERVICE LEVEL AGREEMENT
+Supplier: Gamma FastTrack (VEN-03)
+Effective Date: 2026
+
+Section 4: Delivery and Performance Constraints
+Gamma FastTrack guarantees rapid delivery times for all critical supply chain components. However, this speed comes with strict reliability mandates. 
+
+4.1 On-Time Rate Requirement:
+Gamma FastTrack MUST maintain an on-time delivery rate of strictly greater than 0.98 (>98%). 
+If the on-time delivery rate falls below 0.98, they are considered in breach of contract and all future urgent shipments must be routed to a secondary provider until their metrics recover.

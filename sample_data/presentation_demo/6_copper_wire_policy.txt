@@ -1,0 +1,11 @@
+RETURN AND USAGE POLICY: COPPER WIRE
+Document ID: POL-CW-2026
+
+1. General Usage:
+Copper Wire (SKU-102) is a highly perishable electronic raw material. If the stock of Copper Wire drops below a critical threshold or is subject to historical discrepancies, all warehouse managers must immediately audit the physical bins.
+
+2. Excess Stock:
+If we have over 400 units of Copper Wire currently in stock, we are authorized to run the "High Output" manufacturing line. If we have under 400 units, the "High Output" line must be paused.
+
+3. Restocking:
+Always order Copper Wire from Alpha Logistics unless it is an urgent emergency.

@@ -65,7 +65,7 @@ export default function SuppliersPage() {
   return (
     <>
       <Header title="Supplier Management" subtitle="Upload supplier dataset and evaluate vendors" />
-      <div className="p-6 max-w-3xl mx-auto space-y-5">
+      <div className="p-4 md:p-6 max-w-3xl mx-auto space-y-5">
         <div className="glass rounded-xl p-4 animate-slide-up">
           <div className="flex items-start gap-3">
             <div className="p-2 rounded-lg bg-emerald-50 shrink-0">

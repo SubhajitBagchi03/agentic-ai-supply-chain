@@ -38,7 +38,7 @@ export default function ReportsPage() {
   return (
     <>
       <Header title="Reports" subtitle="Generate supply chain intelligence reports" />
-      <div className="p-6 space-y-5">
+      <div className="p-4 md:p-6 space-y-5">
         {/* Tutorial Card */}
         <div className="glass rounded-xl p-4 animate-slide-up">
           <div className="flex items-start gap-3">
