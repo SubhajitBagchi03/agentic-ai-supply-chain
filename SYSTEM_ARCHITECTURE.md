@@ -12,7 +12,7 @@ The system follows a clear pipeline: **Input → Intent Detection → Agent Rout
 graph TD
     %% Frontend Layer
     subgraph Frontend [React Frontend]
-        UI[User Dashboard (Live Charts), AI Query Chat, & SKU Decisions Deep-Dive]
+        UI["User Dashboard (Live Charts), AI Query Chat, & SKU Decisions Deep-Dive"]
         Upload[Upload CSVs & PDFs]
         Alerts[Click Action on Live Alert]
     end
