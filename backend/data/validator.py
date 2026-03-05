@@ -128,10 +128,38 @@ async def validate_csv_schema(df: pd.DataFrame, dataset_type: str) -> list:
             warnings.append(f"AI Column Mapping successfully applied: {mapping}")
 
     if missing:
-        raise SchemaValidationError(
-            f"Missing required columns for {dataset_type} dataset",
-            missing_columns=list(missing),
-            extra_columns=list(extra),
+        # Graceful Data Degradation: Backfill missing columns instead of crashing
+        data_logger.warning(f"Gracefully degrading. Generating synthetic default columns for missing: {missing}")
+        
+        # Define intelligent defaults based on standard schema column names
+        defaults = {
+            "on_hand": 0.0,
+            "safety_stock": 0.0,
+            "lead_time_days": 1.0,  # Prevent div-by-zero or zero-lead math issues
+            "avg_daily_demand": 1.0, # Prevent div-by-zero
+            "cost_index": 0.0,
+            "on_time_rate": 0.5,
+            "quality_score": 0.5,
+            "risk_score": 0.5,
+            "quantity": 0.0,
+            "delay_days": 0.0,
+        }
+        
+        for col in missing:
+            # If the column is in our known integer/float defaults, use it, otherwise use 'Unknown' string
+            if col in defaults:
+                df[col] = defaults[col]
+            else:
+                if col in ["planned_date", "actual_date", "date"]:
+                    from datetime import datetime
+                    df[col] = datetime.now().strftime("%Y-%m-%d")
+                else:
+                    df[col] = "Unknown"
+                    
+        # Add strong UI warnings instead of HTTP 422 crash
+        warnings.append(
+            f"⚠️ PARTIAL DATASET: Missing critical columns {list(missing)}. "
+            f"The system injected safe default values so the upload succeeds, but predictive agent formulas will be disabled or severely degraded on this data."
         )
 
     if extra:
