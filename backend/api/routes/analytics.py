@@ -188,7 +188,8 @@ async def sku_decisions(sku: str):
 
             # Recommendations
             if on_hand <= safety:
-                reorder_qty = max(0, (demand * lead * 1.5) - on_hand)
+                from utils.math_utils import compute_reorder_quantity
+                reorder_qty = compute_reorder_quantity(demand, lead, safety, on_hand)
                 result["recommendations"].append(f"URGENT: Reorder {round(reorder_qty)} units immediately")
             if dos is not None and dos < lead:
                 result["recommendations"].append("Consider expedited shipping to avoid stockout")
