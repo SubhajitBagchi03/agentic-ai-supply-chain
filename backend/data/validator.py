@@ -245,6 +245,10 @@ def validate_shipment_data(df: pd.DataFrame) -> list:
     """Validate shipment-specific data quality."""
     warnings = []
 
+    # Ensure optional columns exist for downstream agents
+    if "delay_days" not in df.columns:
+        df["delay_days"] = 0.0
+
     # Duplicate shipment IDs
     dups = df[df.duplicated(subset=["shipment_id"], keep=False)]
     if not dups.empty:
