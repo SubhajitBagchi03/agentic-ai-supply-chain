@@ -267,7 +267,7 @@ export default function DecisionsPage() {
               <button
                 onClick={handleAiDeepDive}
                 disabled={aiLoading}
-                className="w-full py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl text-sm font-medium hover:from-blue-700 hover:to-purple-700 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
+                className="w-full py-3 bg-linear-to-r from-blue-600 to-purple-600 text-white rounded-xl text-sm font-medium hover:from-blue-700 hover:to-purple-700 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
               >
                 {aiLoading ? (
                   <><Loader2 className="w-4 h-4 animate-spin" /> Consulting AI Agents...</>
@@ -277,7 +277,7 @@ export default function DecisionsPage() {
               </button>
 
               {showAi && aiAnalysis && !aiAnalysis.error && (
-                <div className="mt-4 bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl p-4 border border-blue-100">
+                <div className="mt-4 bg-linear-to-br from-blue-50 to-purple-50 rounded-xl p-4 border border-blue-100">
                   <div className="flex items-center gap-2 mb-3">
                     <Sparkles className="w-4 h-4 text-blue-600" />
                     <span className="text-sm font-semibold text-foreground">AI Multi-Agent Analysis</span>

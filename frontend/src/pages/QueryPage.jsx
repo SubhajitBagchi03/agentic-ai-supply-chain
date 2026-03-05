@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import { sendQuery } from '../services/api';
 import {
-  Send, Loader2, Bot, AlertTriangle,
+  Send, Loader2, AlertTriangle,
   ChevronDown, ChevronUp, Plus, Clock, Sparkles, Menu
 } from 'lucide-react';
 
@@ -223,7 +223,7 @@ export default function QueryPage() {
                   <div className="mb-6">
                     {/* AI avatar + metadata */}
                     <div className="flex items-center gap-3 mb-3">
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center shadow-sm">
+                      <div className="w-8 h-8 rounded-full bg-linear-to-br from-blue-500 to-purple-500 flex items-center justify-center shadow-sm">
                         <Sparkles className="w-4 h-4 text-white" />
                       </div>
                       <span className="font-medium text-foreground text-sm">Supply Chain AI</span>
@@ -292,7 +292,7 @@ export default function QueryPage() {
           {/* Loading indicator */}
           {loading && (
             <div className="flex items-start gap-3 animate-fade-in">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center shadow-sm">
+              <div className="w-8 h-8 rounded-full bg-linear-to-br from-blue-500 to-purple-500 flex items-center justify-center shadow-sm">
                 <Sparkles className="w-4 h-4 text-white" />
               </div>
               <div className="flex items-center gap-2 text-sm text-muted-foreground pt-1.5">
@@ -307,7 +307,7 @@ export default function QueryPage() {
       </div>
 
       {/* Bottom Input Bar */}
-      <div className="sticky bottom-0 px-4 md:px-6 pb-4 pt-2 bg-gradient-to-t from-[var(--background)] via-[var(--background)] to-transparent">
+      <div className="sticky bottom-0 px-4 md:px-6 pb-4 pt-2 bg-linear-to-t from-background via-background to-transparent">
         <form onSubmit={handleSubmit} className="max-w-3xl mx-auto">
           <div className="bg-white rounded-3xl border border-black/8 shadow-lg px-4 py-2 flex items-end gap-2">
             <button
