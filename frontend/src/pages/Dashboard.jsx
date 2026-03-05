@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import Header from '../components/layout/Header';
 import { getHealth, getAlerts, getDashboardAnalytics } from '../services/api';
 import {
@@ -392,13 +392,14 @@ export default function Dashboard() {
                 { label: 'Check Shipment Status', href: '/query' },
                 { label: 'Generate Report', href: '/reports' },
               ].map((action) => (
-                <a
+                <Link
                   key={action.label}
-                  href={action.href}
+                  to={action.href}
+                  state={{ initialQuery: action.label }}
                   className="block px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition"
                 >
                   {action.label}
-                </a>
+                </Link>
               ))}
             </div>
           </div>
