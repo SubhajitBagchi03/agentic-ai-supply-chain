@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import Sidebar from './Sidebar';
 import { getHealth } from '../../services/api';
 
-function ConnectionOverlay() {
+function ConnectionToast() {
   const [status, setStatus] = useState('connecting'); // connecting | connected | hidden
   const intervalRef = useRef(null);
 
@@ -15,10 +15,9 @@ function ConnectionOverlay() {
         if (mounted && health?.groq_connected) {
           setStatus('connected');
           clearInterval(intervalRef.current);
-          // Fade out after showing success briefly
           setTimeout(() => {
             if (mounted) setStatus('hidden');
-          }, 1800);
+          }, 2500);
         }
       } catch {
         // Still connecting...
@@ -38,45 +37,30 @@ function ConnectionOverlay() {
 
   return (
     <div
-      className={`fixed inset-0 z-[9999] flex items-center justify-center transition-opacity duration-700 ${
-        status === 'connected' ? 'opacity-0 pointer-events-none' : 'opacity-100'
+      className={`fixed bottom-6 right-6 z-50 transition-all duration-500 ${
+        status === 'connected' ? 'opacity-0 translate-y-2' : 'opacity-100 translate-y-0'
       }`}
-      style={{ backdropFilter: 'blur(12px)', background: 'rgba(0, 0, 0, 0.45)' }}
     >
-      <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-sm w-full mx-4 text-center transform transition-all duration-500">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-lg px-5 py-4 flex items-center gap-3 max-w-xs">
         {status === 'connecting' ? (
           <>
-            {/* Pulsing ring animation */}
-            <div className="mx-auto mb-5 w-14 h-14 relative">
-              <div className="absolute inset-0 rounded-full border-[3px] border-blue-200 animate-ping opacity-30" />
-              <div className="absolute inset-0 rounded-full border-[3px] border-blue-500 border-t-transparent animate-spin" />
-            </div>
-            <h3 className="text-lg font-bold text-slate-900 mb-1">
-              Establishing Secure Connection
-            </h3>
-            <p className="text-sm text-slate-500 mb-4">
-              Connecting to the Groq inference engine...
-            </p>
-            <div className="flex items-center justify-center gap-1.5">
-              <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-              <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-              <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+            <div className="w-5 h-5 rounded-full border-2 border-blue-500 border-t-transparent animate-spin shrink-0" />
+            <div>
+              <p className="text-sm font-semibold text-slate-800">Connecting to Groq</p>
+              <p className="text-xs text-slate-400">AI engine warming up...</p>
             </div>
           </>
         ) : (
           <>
-            {/* Success checkmark */}
-            <div className="mx-auto mb-5 w-14 h-14 bg-emerald-100 rounded-full flex items-center justify-center">
-              <svg className="w-7 h-7 text-emerald-600" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
+            <div className="w-5 h-5 bg-emerald-100 rounded-full flex items-center justify-center shrink-0">
+              <svg className="w-3 h-3 text-emerald-600" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
               </svg>
             </div>
-            <h3 className="text-lg font-bold text-slate-900 mb-1">
-              Systems Online
-            </h3>
-            <p className="text-sm text-slate-500">
-              All services connected. Ready to operate.
-            </p>
+            <div>
+              <p className="text-sm font-semibold text-slate-800">Connected</p>
+              <p className="text-xs text-slate-400">All systems operational</p>
+            </div>
           </>
         )}
       </div>
@@ -87,7 +71,7 @@ function ConnectionOverlay() {
 export default function AppLayout({ children }) {
   return (
     <div className="min-h-screen bg-background">
-      <ConnectionOverlay />
+      <ConnectionToast />
       <Sidebar />
       <main className="md:ml-64 min-h-screen flex flex-col">
         <div className="flex-1">
